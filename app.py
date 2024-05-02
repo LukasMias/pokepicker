@@ -51,7 +51,6 @@ if 'ball_images' not in st.session_state:
 
 
 
-@st.cache_data
 def load_image(image_path):
     response = requests.get(image_path)
     response.raise_for_status()  # Stellt sicher, dass die Anfrage erfolgreich war
