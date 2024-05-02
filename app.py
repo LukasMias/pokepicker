@@ -12,32 +12,32 @@ from io import BytesIO
 from transparent_background import Remover
 st.set_page_config(page_title='PokéballPicker',page_icon='cover.jpg',layout='centered')
 balldict = {
-    'Freundesball': r'pokepicker/balls/Freundesball.png',
-    'Wiederball': r'pokepicker/balls/Wiederball.png',
-    'Tauchball': r'pokepicker/balls/Tauchball.png',
-    'Nestball': r'pokepicker/balls/Nestball.png',
-    'Timerball': r'pokepicker/balls/Timerball.png',
-    'Hyperball': r'pokepicker/balls/Hyperball.png',
-    'Flottball': r'pokepicker/balls/Flottball.png',
-    'Heilball': r'pokepicker/balls/Heilball.png',
-    'Levelball': r'pokepicker/balls/Levelball.png',
-    'Traumball': r'pokepicker/balls/Traumball.png',
-    'Sympaball': r'pokepicker/balls/Sympaball.png',
-    'Superball': r'pokepicker/balls/Superball.png',
-    'Luxusball': r'pokepicker/balls/Luxusball.png',
-    'Mondball': r'pokepicker/balls/Mondball.png',
-    'Koederball': r'pokepicker/balls/Koederball.png',
-    'Schwerball': r'pokepicker/balls/Schwerball.png',
-    'Premierball': r'pokepicker/balls/Premierball.png',
-    'Pokeball': r'pokepicker/balls/Pokeball.png',
-    'Finsterball': r'pokepicker/balls/Finsterball.png',
-    'Safariball': r'pokepicker/balls/Safariball.png',
-    'Netzball': r'pokepicker/balls/Netzball.png',
-    'Meisterball': r'pokepicker/balls/Meisterball.png',
-    'Jubelball': r'pokepicker/balls/Jubelball.png',
-    'Rätselball': r'pokepicker/balls/Raetselball.png',
-    'Turnierball': r'pokepicker/balls/Turnierball.png',
-    'Ultraball': r'pokepicker/balls/Ultraball.png'
+    'Freundesball': 'balls/Freundesball.png',
+    'Wiederball': 'balls/Wiederball.png',
+    'Tauchball': 'balls/Tauchball.png',
+    'Nestball': 'balls/Nestball.png',
+    'Timerball': 'balls/Timerball.png',
+    'Hyperball': 'balls/Hyperball.png',
+    'Flottball': 'balls/Flottball.png',
+    'Heilball': 'balls/Heilball.png',
+    'Levelball': 'balls/Levelball.png',
+    'Traumball': 'balls/Traumball.png',
+    'Sympaball': 'balls/Sympaball.png',
+    'Superball': 'balls/Superball.png',
+    'Luxusball': 'balls/Luxusball.png',
+    'Mondball': 'balls/Mondball.png',
+    'Koederball': 'balls/Koederball.png',
+    'Schwerball': 'balls/Schwerball.png',
+    'Premierball': 'balls/Premierball.png',
+    'Pokeball': 'balls/Pokeball.png',
+    'Finsterball': 'balls/Finsterball.png',
+    'Safariball': 'balls/Safariball.png',
+    'Netzball': 'balls/Netzball.png',
+    'Meisterball': 'balls/Meisterball.png',
+    'Jubelball': 'balls/Jubelball.png',
+    'Rätselball': 'balls/Raetselball.png',
+    'Turnierball': 'balls/Turnierball.png',
+    'Ultraball': 'balls/Ultraball.png'
 }
 
 
@@ -46,7 +46,8 @@ if 'ball_images' not in st.session_state:
     st.session_state['ball_images'] = {}
     for key, value in balldict.items():
         # Der vollständige Pfad hängt davon ab, wo sich Ihr Streamlit-Skript befindet
-        full_path = balldict[key]
+        base_path = os.path.dirname(__file__)
+        full_path = os.path.join(base_path, 'balls', value)
         img = Image.open(full_path).convert('RGBA')
         st.session_state['ball_images'][key] = img
 
