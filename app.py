@@ -37,7 +37,8 @@ balldict = {
     'Jubelball': 'Jubelball.png',
     'Rätselball': 'Raetselball.png',
     'Turnierball': 'Turnierball.png',
-    'Ultraball': 'Ultraball.png'
+    'Ultraball': 'Ultraball.png',
+    'Turboball':'Turboball.png'
 }
 
 
