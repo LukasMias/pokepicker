@@ -46,7 +46,7 @@ if 'ball_images' not in st.session_state:
     st.session_state['ball_images'] = {}
     for key, value in balldict.items():
         # Der vollständige Pfad hängt davon ab, wo sich Ihr Streamlit-Skript befindet
-        full_path = os.path.join(os.getcwd(), value)
+        full_path = balldict[key]
         img = Image.open(full_path).convert('RGBA')
         st.session_state['ball_images'][key] = img
 
