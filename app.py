@@ -82,7 +82,7 @@ if 'remover' not in st.session_state:
 df = st.session_state['data'].copy()
 
 st.title('Pokeball-Picker')
-st.sidebar.write('In dieser App kannst du ein Pokémon auswählen und erhältst anschließend Vorschläge ...')
+st.sidebar.write('In dieser App kannst du ein Pokémon auswählen und erhältst anschließend Vorschläge für die zu dem Sprite passenden Bälle! Solltest du mit der Darstellung des Sprites unzufrieden sein, kannst du im unteren Teil der App auch ein eigenes Bild hochladen und dir entsprechende Bälle empfehlen lassen. Die Basis für die Empfehlungen bilden die "Hauptfarben" des Pokémon, die mit den Hauptfarben der Bälle verglichen werden.')
 clusterzahl = st.sidebar.slider('Wie viele Hauptfarben sollen berücksichtigt werden?', min_value=1, max_value=5, step=1, value=2)
 
 pokemon_choice = st.selectbox("Wähle ein Pokémon:", df['germanname'].unique())
