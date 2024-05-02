@@ -48,6 +48,7 @@ if 'ball_images' not in st.session_state:
         # Der vollständige Pfad hängt davon ab, wo sich Ihr Streamlit-Skript befindet
         base_path = os.path.dirname(__file__)
         full_path = os.path.join(base_path, 'balls', value)
+        st.write(full_path)
         img = Image.open(full_path).convert('RGBA')
         st.session_state['ball_images'][key] = img
 
