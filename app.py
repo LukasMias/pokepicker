@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 from sklearn.metrics import pairwise_distances
 from PIL import Image
-import os
 import random
 from sklearn.cluster import MiniBatchKMeans
 import json
@@ -51,7 +50,7 @@ if 'ball_images' not in st.session_state:
 
 
 
-
+@st.cache_data(max_entries=5)
 def load_image(image_path):
     response = requests.get(image_path)
     response.raise_for_status()  # Stellt sicher, dass die Anfrage erfolgreich war
@@ -76,9 +75,6 @@ if 'data' not in st.session_state:
 
 with open('color_data.json', 'r') as file:
     balls_colors = json.load(file)
-
-if 'remover' not in st.session_state:
-    st.session_state['remover'] = Remover(mode='base-nightly')
 df = st.session_state['data'].copy()
 
 st.title('Pokeball-Picker')
@@ -178,7 +174,8 @@ if img_file_buffer is not None:
             st.write('Mit folgendem Knopf kannst du den Hintergrund des Pokemons auf deinem Bild entfernen lassen. Beachte jedoch, dass der Algorithmus je nach Größe des Bildes einige Zeit in Anspruch nehmen kann.')
             if st.button('Hintergrund entfernen!'):
                 with st.spinner('Hintergrund wird übermalt...'):
-                    st.session_state['processed_image'] = st.session_state['remover'].process(image)
+                    remover = Remover(mode='base-nightly')
+                    st.session_state['processed_image'] = remover.process(image)
                     st.rerun()
         if 'processed_image' in st.session_state:
             if st.button('Bild zurücksetzen!'):
