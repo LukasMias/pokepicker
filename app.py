@@ -7,6 +7,7 @@ import random
 from sklearn.cluster import MiniBatchKMeans
 import json
 import requests
+import itertools
 from io import BytesIO
 #from transparent_background import Remover
 st.set_page_config(page_title='PokéballPicker',page_icon='cover.jpg',layout='centered')
@@ -34,7 +35,7 @@ balldict = {
     'Netzball': 'Netzball.png',
     'Meisterball': 'Meisterball.png',
     'Jubelball': 'Jubelball.png',
-    'Rätselball': 'Raetselball.png',
+    'Raetselball': 'Raetselball.png',
     'Turnierball': 'Turnierball.png',
     'Ultraball': 'Ultraball.png',
     'Turboball':'Turboball.png'
@@ -64,12 +65,6 @@ def get_main_colors(img, n_colors):
     centers = kmeans.cluster_centers_
     return centers
 
-def match_colors(pokemon_colors, ball_colors):
-    distances = pairwise_distances(pokemon_colors, ball_colors)
-    index = np.sum(distances, axis=0).argmin()
-    return index
-
-
 if 'data' not in st.session_state:
     st.session_state['data'] = pd.read_excel('pokemondf.xlsx')
 
@@ -79,7 +74,7 @@ df = st.session_state['data'].copy()
 
 st.title('Pokeball-Picker')
 st.sidebar.write('In dieser App kannst du ein Pokémon auswählen und erhältst anschließend Vorschläge für die zu dem Sprite passenden Bälle! Solltest du mit der Darstellung des Sprites unzufrieden sein, kannst du im unteren Teil der App auch ein eigenes Bild hochladen und dir entsprechende Bälle empfehlen lassen. Die Basis für die Empfehlungen bilden die "Hauptfarben" des Pokémon, die mit den Hauptfarben der Bälle verglichen werden.')
-clusterzahl = st.sidebar.slider('Wie viele Hauptfarben sollen berücksichtigt werden?', min_value=1, max_value=5, step=1, value=2)
+clusterzahl = st.sidebar.slider('Wie viele Hauptfarben sollen berücksichtigt werden?', min_value=1, max_value=5, step=1, value=3)
 
 pokemon_choice = st.selectbox("Wähle ein Pokémon:", df['germanname'].unique())
 row = df[df['germanname'] == pokemon_choice].iloc[0]
@@ -91,14 +86,20 @@ pokemon_sprite = load_image(chosen_sprite_path)
 pokemon_colors = get_main_colors(pokemon_sprite, n_colors=clusterzahl)
 
 matches = {}
-for name, colors in balls_colors.items():
-    distances = pairwise_distances(pokemon_colors, np.array(colors))
-    match_score = np.sum(distances, axis=0).min()
+for name, _ in balls_colors.items():
+    ball_sprite = Image.open(name + ".png").convert('RGBA')
+    ball_colors = get_main_colors(ball_sprite, n_colors=clusterzahl)
+    match_score = 999
+    for comb in itertools.permutations(range(clusterzahl)):
+        distances = [np.linalg.norm(pokemon_colors[i] - ball_colors[comb[i]]) for i in range(clusterzahl)]
+        match_score = min(match_score, np.sum(distances))
     matches[name] = match_score
+    # wär richtig geil wenn man die pokemon colors die wir finden darstellen könnten in der website
+    print(pokemon_colors)
+print(sorted(matches.items(), key=lambda item: item[1])[:3])
 
 # Sortiere die Bälle nach ihrem Match-Score und extrahiere die Namen der besten drei Bälle
 best_three_balls = [name for name, score in sorted(matches.items(), key=lambda item: item[1])[:3]]
-
 
 col1, col2, col3 = st.columns([0.5, 0.25, 0.25])
 with col1:
@@ -107,7 +108,7 @@ with col1:
 
 with col2:
     random_choice = random.randint(0, 5)
-    if random_choice == 2:
+    if random_choice == 6:
         st.subheader('Best Ball \n (Dominant Color)')
         st.image(st.session_state['ball_images']['Flottball'])
         st.image(st.session_state['ball_images']['Flottball'])  
