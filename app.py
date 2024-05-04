@@ -8,7 +8,7 @@ from sklearn.cluster import MiniBatchKMeans
 import json
 import requests
 from io import BytesIO
-from transparent_background import Remover
+#from transparent_background import Remover
 st.set_page_config(page_title='PokéballPicker',page_icon='cover.jpg',layout='centered')
 balldict = {
     'Freundesball': 'Freundesball.png',
