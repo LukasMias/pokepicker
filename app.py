@@ -83,23 +83,33 @@ normal_sprite_path = row.sprite
 shiny_sprite_path = row.shiny_sprite
 chosen_sprite_path = shiny_sprite_path if is_shiny else normal_sprite_path
 pokemon_sprite = load_image(chosen_sprite_path)
-pokemon_colors = get_main_colors(pokemon_sprite, n_colors=clusterzahl)
 
-matches = {}
-for name, _ in balls_colors.items():
-    ball_sprite = Image.open(name + ".png").convert('RGBA')
-    ball_colors = get_main_colors(ball_sprite, n_colors=clusterzahl)
-    match_score = 999
-    for comb in itertools.permutations(range(clusterzahl)):
-        distances = [np.linalg.norm(pokemon_colors[i] - ball_colors[comb[i]]) for i in range(clusterzahl)]
-        match_score = min(match_score, np.sum(distances))
-    matches[name] = match_score
-    # wär richtig geil wenn man die pokemon colors die wir finden darstellen könnten in der website
-    print(pokemon_colors)
-print(sorted(matches.items(), key=lambda item: item[1])[:3])
+final_matches = {}
+for n in range(1,clusterzahl+1):
+    pokemon_colors = get_main_colors(pokemon_sprite, n_colors=n)
+
+    matches = {}
+    for name, _ in balls_colors.items():
+        ball_sprite = Image.open(name + ".png").convert('RGBA')
+        ball_colors = get_main_colors(ball_sprite, n_colors=n)
+        match_score = 9999
+        for comb in itertools.permutations(range(n)):
+            distances = [np.linalg.norm(pokemon_colors[i] - ball_colors[comb[i]]) for i in range(n)]
+            match_score = min(match_score, np.sum(distances))
+        matches[name] = match_score
+    print(matches)
+    if n == 1:
+        final_matches = matches
+    else:
+        final_matches = {name: final_matches[name] + matches[name]/(2*n) for name,_ in matches.items()}
+
+html_string = "<h3>Dominant Pokémon colors: </h3>"
+for color in pokemon_colors:
+    html_string += "<p style=\"display:inline;color:rgb(" + str(int(color[0]))+","+ str(int(color[1]))+","+ str(int(color[2])) + ");\">██ </p>"
+st.markdown(html_string, unsafe_allow_html=True)
 
 # Sortiere die Bälle nach ihrem Match-Score und extrahiere die Namen der besten drei Bälle
-best_three_balls = [name for name, score in sorted(matches.items(), key=lambda item: item[1])[:3]]
+best_three_balls = [name for name, score in sorted(final_matches.items(), key=lambda item: item[1])[:3]]
 
 col1, col2, col3 = st.columns([0.5, 0.25, 0.25])
 with col1:
